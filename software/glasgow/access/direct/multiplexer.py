@@ -1,6 +1,8 @@
 import logging
 from amaranth import *
+from amaranth.lib import wiring
 
+from ...gateware import stream
 from .. import AccessMultiplexer, AccessMultiplexerInterface
 
 
@@ -30,6 +32,11 @@ class _FIFOReadPort(Elaboratable):
         self.r_en   = Signal()
         self.r_rdy  = Signal()
         self.r_data = fifo.r_data
+
+        self.r_stream = stream.Signature(8).create()
+        self.r_stream.payload = self.r_data
+        self.r_stream.valid = self.r_rdy
+        self.r_stream.ready = self.r_en
 
     def elaborate(self, platform):
         fifo = self._fifo
@@ -69,6 +76,11 @@ class _FIFOWritePort(Elaboratable):
         self.w_rdy  = Signal()
         self.w_data = fifo.w_data
         self.flush  = fifo.flush
+
+        self.w_stream = stream.Signature(8).flip().create()
+        self.w_stream.payload = self.w_data
+        self.w_stream.valid = self.w_en
+        self.w_stream.ready = self.w_rdy
 
     def elaborate(self, platform):
         fifo = self._fifo

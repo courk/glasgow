@@ -301,6 +301,9 @@ class DirectDemultiplexerInterface(AccessDemultiplexerInterface):
             self._out_tasks.submit(self._out_task(self._out_slice()))
 
     async def write(self, data):
+        await self.writev([data])
+
+    async def writev(self, datav):
         if self._write_buffer_size is not None:
             # If write buffer is bounded, and we have more inflight requests than the configured
             # write buffer size, then wait until the inflight requests arrive before continuing.
@@ -313,8 +316,9 @@ class DirectDemultiplexerInterface(AccessDemultiplexerInterface):
         # Eagerly check if any of our previous queued writes errored out.
         await self._out_tasks.poll()
 
-        self.logger.trace("FIFO: write <%s>", dump_hex(data))
-        self._out_buffer.write(data)
+        for data in datav:
+            self.logger.trace("FIFO: write <%s>", dump_hex(data))
+            self._out_buffer.write(data)
 
         # The write scheduling algorithm attempts to satisfy several partially conflicting goals:
         #  * We want to schedule writes as early as possible, because this reduces buffer bloat and

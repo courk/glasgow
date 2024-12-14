@@ -62,7 +62,7 @@ builtin-toolchain = [
   # the lowest that has features transitively required by Glasgow.
   "yowasp-runtime>=1.42",
   # Most versions of Yosys and nextpnr work; the minimum versions listed here are known good.
-  "yowasp-yosys>=0.31.0.13",
+  "yowasp-yosys>=0.31.0.13,<0.48",
   "yowasp-nextpnr-ice40>=0.1",
 ]
 
@@ -92,6 +92,8 @@ jtag-svf = "glasgow.applet.interface.jtag_svf:JTAGSVFApplet"
 ps2-host = "glasgow.applet.interface.ps2_host:PS2HostApplet"
 sbw-probe = "glasgow.applet.interface.sbw_probe:SpyBiWireProbeApplet"
 swd-openocd = "glasgow.applet.interface.swd_openocd:SWDOpenOCDApplet"
+
+rp2350-lfi = "glasgow.applet.interface.rp2350_lfi:Rp2350LfiApplet"
 
 memory-24x = "glasgow.applet.memory._24x:Memory24xApplet"
 memory-25x = "glasgow.applet.memory._25x:Memory25xApplet"
